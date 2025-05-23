@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:4.2
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+
+  orion:
+    image: fiware/orion
+    container_name: orion
+    depends_on:
+      - mongo
+    ports:
+      - "1026:1026"
+    command: -dbhost mongo -logLevel DEBUG
+    restart: always
+
+  node-red:
+    image: nodered/node-red
+    container_name: node-red
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./nodered_data:/data
+    restart: always
