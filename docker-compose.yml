@@ -23,6 +23,18 @@ services:
     networks:
       - fiware
 
+  node-red:
+    image: nodered/node-red:latest
+    container_name: node-red
+    restart: always
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./node-red-data:/data
+    networks:
+      - fiware
+    environment:
+      - TZ=America/Sao_Paulo
 
 networks:
   fiware:
