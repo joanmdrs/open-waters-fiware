@@ -1,40 +1,49 @@
-version: "3.8"
-
+version: '3'
 services:
-  mongo:
+  mongo-db:
     image: mongo:4.4
-    container_name: mongo
-    restart: always
+    container_name: mongodb
     ports:
       - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     networks:
       - fiware
-
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo --host localhost:27017 --username root --password example --authenticationDatabase admin
+      interval: 10s
+      timeout: 5s
+      retries: 10
   orion:
-    image: fiware/orion
+    image: fiware/orion:3.7.0
     container_name: orion
     depends_on:
-      - mongo
+      mongo-db:
+        condition: service_healthy
     ports:
       - "1026:1026"
-    command: >
-      -dbURI mongodb://mongo:27017
-      -logLevel INFO
+    command: -dbhost mongo-db -dbuser root -dbpwd example
     networks:
       - fiware
-
-  node-red:
+  nodered:
     image: nodered/node-red:latest
-    container_name: node-red
-    restart: always
+    container_name: nodered
     ports:
       - "1880:1880"
-    volumes:
-      - ./node-red-data:/data
+    depends_on:
+      - orion
     networks:
       - fiware
-    environment:
-      - TZ=America/Sao_Paulo
+  grafana: # NOVO SERVIÇO
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000" 
+    networks:
+      - fiware
+    depends_on:
+      - orion 
 
 networks:
   fiware:
