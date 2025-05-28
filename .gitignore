@@ -1,0 +1,36 @@
+# Dependências do Node.js
+node_modules/
+
+# Arquivos de log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Diretório do Node-RED runtime (se usado)
+flows_*.json.backup
+flows_cred.json
+.flow.json
+lib/
+.projects
+
+# Configurações do VSCode (caso esteja usando)
+.vscode/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Build (se gerar artefatos de build)
+dist/
+build/
+
+# Ambiente
+.env
+.env.local
+_cacache/
+
